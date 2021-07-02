@@ -42,7 +42,6 @@ runApp <- function(use_test_data = FALSE){
           shiny::column(
             6,
             shiny::uiOutput("cate_check"),
-            shiny::uiOutput("spec_cate_check"),
             shiny::uiOutput("rate_slider"),
             shiny::uiOutput("media_check")
           )
@@ -94,7 +93,6 @@ runApp <- function(use_test_data = FALSE){
     save_current <- function() {
       # --- save the current one
       data_core[word_index, "cate"] <<- list(list(input$cate))
-      data_core[word_index, "spec_cate"] <<- list(list(input$spec_cate))
       data_core[word_index, "media"] <<- list(list(input$media))
       data_core[word_index, "rate"] <<- if (is.null(input$rate)) {
         NA
@@ -127,27 +125,6 @@ runApp <- function(use_test_data = FALSE){
     index_goto <- function(x) {
       # -- index goto
       if (1 <= as.numeric(x) & as.numeric(x) <= nrow(data_core)) word_index <<- as.numeric(x)
-    }
-
-    render_spec_cate_check <- function(x){
-      if("Food" %in% x){
-        output$spec_cate_check <- shiny::renderUI({
-          shinyWidgets::checkboxGroupButtons(
-            inputId = "spec_cate",
-            label = "Specific category",
-            choices = c("Fruit", "Vegetable", "Fast food"),
-            individual = FALSE,
-            selected = (if (length(data_core[word_index, "spec_cate"][[1]]) == 0) {
-              NULL
-            } else {
-              data_core[word_index, "spec_cate"][[1]]
-            })
-          )
-        })
-      }
-      else{
-        output$spec_cate_check <- shiny::renderUI({NULL})
-      }
     }
 
     render_all <- function() {
@@ -212,8 +189,6 @@ runApp <- function(use_test_data = FALSE){
         counter_saved <- ifelse(data_core[word_index, "saved"], "saved", "not saved")
         return(paste(counter_num, counter_saved))
       })
-
-      render_spec_cate_check(data_core[word_index, "cate"])
     }
 
     # The actions and their corresponding functions
@@ -262,7 +237,6 @@ runApp <- function(use_test_data = FALSE){
     shiny::observeEvent(input$cate,
                  {
                    attr(data_core, "log") <<- append(attr(data_core, "log"), paste0(word_index, "; cate; ", Sys.time()))
-                   render_spec_cate_check(input$cate)
                  }
     )
 
