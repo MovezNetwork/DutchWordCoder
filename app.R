@@ -1,15 +1,3 @@
-packages <- c("shiny", "shinythemes", "shinyWidgets")
-
-package.check <- lapply(
-  packages,
-  FUN = function(x) {
-    if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE)
-      library(x, character.only = TRUE)
-    }
-  }
-)
-
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
@@ -51,11 +39,7 @@ ui <- fixedPage(
       ),
       fixedRow(
         column(6,
-          align = "center",
-          actionButton("previous", "Previous", icon = icon("angle-left"), width = "90px"),
-          actionButton("nextone", "Next", icon = icon("angle-right"), width = "90px"),
-          actionButton("save", "Save", icon = icon("save"), width = "90px"),
-          searchInput("goto", "Go to word #", placeholder = "Press Enter to go")
+               uiOutput("note_area")
         ),
         column(
           6,
@@ -68,8 +52,15 @@ ui <- fixedPage(
           )
         )
       ),
-
-      uiOutput("note_area")
+      fixedRow(
+        align = "left",
+        p(strong("Navigation Panel")),
+        p("Only for checking and directing purposes; you won't need these functions in normal coding processes."),
+        actionButton("previous", "Previous", icon = icon("angle-left"), width = "90px"),
+        actionButton("nextone", "Next", icon = icon("angle-right"), width = "90px"),
+        actionButton("save", "Save", icon = icon("save"), width = "90px"),
+        searchInput("goto", "Go to word #", placeholder = "Press Enter to go")
+      )
     ),
     tabPanel(
       "About",
